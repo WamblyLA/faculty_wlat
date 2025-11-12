@@ -1,7 +1,8 @@
 package ru.tbank.education.school.lesson1
+import kotlin.math.*
 fun isExisting(str: String): Boolean {
-    for (k in OperationType.entries) {
-        if (k.possible.any {it.lowercase() == (str.lowercase())}) {
+    for (now in OperationType.entries) {
+        if (now.possible.any {it.lowercase() == (str.lowercase())}) {
             return true;
         }
     }
@@ -18,6 +19,18 @@ fun preobrazovatel(str: String): String {
         in listOf("divide", "разделить") -> return "/"
     }
     return str.lowercase();
+}
+fun anotherPreobrazovatel(str: String): OperationType {
+    when (str.lowercase()) {
+        in listOf("+") -> return OperationType.ADD;
+        in listOf("-") -> return OperationType.SUBTRACT;
+        in listOf("*") -> return OperationType.MULTIPLY;
+        in listOf("/") -> return OperationType.DIVIDE;
+        in listOf("sin") -> return OperationType.SIN;
+        in listOf("cos") -> return OperationType.COS;
+        in listOf("sqrt") -> return OperationType.SQRT;
+    }
+    return OperationType.ADD;
 }
 fun priority(str: String): Int {
     when (str) {
@@ -85,45 +98,87 @@ fun toOPZ(str: String): ArrayList<String> {
     }
     return returning;
 }
-/*fun calculate(a: Double?, b: Double?, operation: OperationType = OperationType.ADD): Double? {
-    if (a == null || b == null) {
-        return null
+fun fromOpz(arr: ArrayList<String>): Double? {
+    if (arr.isEmpty()) {
+        return null;
+    }
+    var stack = ArrayDeque<Double>();
+    var res = 0.0;
+    for (now in arr) {
+        val part = now.toDoubleOrNull();
+        if (part != null) {
+            stack.addLast(part);
+        } else if (priority(now) > 0) {
+            val b: Double? = stack.removeLast();
+            val a: Double? = stack.removeLast();
+            val calculateResult = calculate(a, b, anotherPreobrazovatel(now));
+            if (calculateResult != null) {
+                stack.addLast(calculateResult)
+            } else {
+                return null;
+            }
+        }
+    }
+    return stack.last();
+}
+fun calculate(a: Double?, b: Double? = null, operation: OperationType = OperationType.ADD): Double? {
+    if (a == null) {
+        return null;
     }
     when (operation) {
-        OperationType.ADD-> {
-            println(a+b)
-            return a + b
+        OperationType.ADD -> {
+            if (b != null) {
+                return a + b
+            }
         }
         OperationType.SUBTRACT -> {
-            println(a - b)
-            return a - b
+            if (b != null) {
+                return a - b;
+            }
         }
 
         OperationType.DIVIDE -> {
-            if (b == 0.0) {
-                println(null)
+            if (b == 0.0 || b == null) {
                 return null
             } else {
-                println(a/b)
                 return a/b
             }
         }
         OperationType.MULTIPLY -> {
-            println(a * b)
-            return a * b
+            if (b != null) {
+                return a * b;
+            }
+        }
+        OperationType.COS -> {
+            if (b == null) {
+                return cos(a)
+            }
+        }
+        OperationType.SIN -> {
+            if (b == null) {
+                return sin(a);
+            }
+        }
+        OperationType.SQRT -> {
+            if (b == null) {
+                return sqrt(a);
+            }
         }
     }
-    return 0.0
-}*/
+    return null;
+}
 fun main() {
-    val arr = toOPZ("((1add2)* 3) вычесть1")
-    if (arr.isEmpty()) {
+    val arr = toOPZ("((1 + 2)* 3) - 1")
+    val res = fromOpz(arr)
+    if (res == null) {
         println("Кажется, в выражении что-то не так...")
     }
     for (k in arr){
         print(k)
         print(" ")
     }
+    print("\n")
+    print(res)
 }
 /**
  * Функция вычисления выражения, представленного строкой
