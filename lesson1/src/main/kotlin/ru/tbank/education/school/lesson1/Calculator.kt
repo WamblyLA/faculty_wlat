@@ -36,6 +36,7 @@ fun priority(str: String): Int {
     when (str) {
         in listOf("+", "-") -> return 1
         in listOf("*", "/") -> return 2
+        in listOf("sin", "cos", "sqrt") -> return 3
     }
     return 0;
 }
@@ -83,6 +84,9 @@ fun toOPZ(str: String): ArrayList<String> {
             } else {
                 return ArrayList<String>();
             }
+            if (!stack.isEmpty() && (stack.last() == "sin" || stack.last() == "cos" || stack.last() == "sqrt")) {
+                returning.add(stack.removeLast());
+            }
             i++;
         } else {
             val procheck = char.toString();
@@ -103,19 +107,29 @@ fun fromOpz(arr: ArrayList<String>): Double? {
         return null;
     }
     var stack = ArrayDeque<Double>();
-    var res = 0.0;
     for (now in arr) {
         val part = now.toDoubleOrNull();
         if (part != null) {
             stack.addLast(part);
         } else if (priority(now) > 0) {
-            val b: Double? = stack.removeLast();
-            val a: Double? = stack.removeLast();
-            val calculateResult = calculate(a, b, anotherPreobrazovatel(now));
-            if (calculateResult != null) {
-                stack.addLast(calculateResult)
+            val realOne = anotherPreobrazovatel(now);
+            if (realOne == OperationType.SIN || realOne == OperationType.COS) {
+                val a = stack.removeLast();
+                val calculateResult = calculate(a, null, realOne);
+                if (calculateResult != null) {
+                    stack.addLast(calculateResult);
+                } else {
+                    return null;
+                }
             } else {
-                return null;
+                val b: Double? = stack.removeLast();
+                val a: Double? = stack.removeLast();
+                val calculateResult = calculate(a, b, anotherPreobrazovatel(now));
+                if (calculateResult != null) {
+                    stack.addLast(calculateResult)
+                } else {
+                    return null;
+                }
             }
         }
     }
@@ -151,12 +165,12 @@ fun calculate(a: Double?, b: Double? = null, operation: OperationType = Operatio
         }
         OperationType.COS -> {
             if (b == null) {
-                return cos(a)
+                return cos(Math.toRadians(a));
             }
         }
         OperationType.SIN -> {
             if (b == null) {
-                return sin(a);
+                return sin(Math.toRadians(a));
             }
         }
         OperationType.SQRT -> {
@@ -168,9 +182,9 @@ fun calculate(a: Double?, b: Double? = null, operation: OperationType = Operatio
     return null;
 }
 fun main() {
-    val arr = toOPZ("((1 + 2)* 3) - 1")
+/*    val arr = toOPZ("(sin (30) * 2 + 4) / 5 + 1")
     val res = fromOpz(arr)
-    if (res == null) {
+    if (res == null){
         println("Кажется, в выражении что-то не так...")
     }
     for (k in arr){
@@ -178,7 +192,7 @@ fun main() {
         print(" ")
     }
     print("\n")
-    print(res)
+    print(res)*/
 }
 /**
  * Функция вычисления выражения, представленного строкой
@@ -186,8 +200,12 @@ fun main() {
  * @sample "5 * 2".calculate()*/
 
 
-/*@Suppress("ReturnCount")
+@Suppress("ReturnCount")
 fun String.calculate(): Double? {
-    return 2.0
+    val arr = toOPZ(this);
+    val res = fromOpz(arr)
+    if (res == null){
+        println("Кажется, в выражении что-то не так...")
+    }
+    return res;
 }
-*/
