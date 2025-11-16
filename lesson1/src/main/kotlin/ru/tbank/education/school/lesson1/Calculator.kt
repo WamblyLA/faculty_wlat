@@ -122,8 +122,8 @@ fun fromOpz(arr: ArrayList<String>): Double? {
                     return null;
                 }
             } else {
-                val b: Double? = stack.removeLast();
-                val a: Double? = stack.removeLast();
+                val b: Double = stack.removeLast();
+                val a: Double = stack.removeLast();
                 val calculateResult = calculate(a, b, anotherPreobrazovatel(now));
                 if (calculateResult != null) {
                     stack.addLast(calculateResult)
