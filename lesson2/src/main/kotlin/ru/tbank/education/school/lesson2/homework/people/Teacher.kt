@@ -1,6 +1,5 @@
 package ru.tbank.education.school.lesson2.homework.people
 
-import ru.tbank.education.school.lesson2.homework.University
 import ru.tbank.education.school.lesson2.homework.study.ExamResult
 import ru.tbank.education.school.lesson2.homework.study.Exam
 import ru.tbank.education.school.lesson2.homework.study.Question
@@ -19,19 +18,6 @@ class Teacher (
         val mainInfo = super.getInfo();
         return mainInfo + mapOf("cafedr" to cadefr, "position" to position);
     }
-    fun createExam(university: University, name: String, conductDate: LocalDate, desc: String): Exam {
-        val exam = Exam(id = generateRandomString(10), name = name, teacher = this, conductDate = conductDate, description = desc)
-        university.addExam(exam)
-        return exam
-    }
-    fun deleteExam(university: University, exam: Exam) {
-        if (exam.teacher == this) {
-            university.removeExam(exam)
-        } else {
-            throw Exception("Нельзя удалить не принадлежащий экзамен")
-        }
-    }
-
     fun addQuestions(exam: Exam, mapa: List<Map<String,String>>) { //Я подумал так логичнее, структуру Question они не знают, а вот мапа в разы понятнее
         for (map in mapa){
             val q = Question(
@@ -47,9 +33,9 @@ class Teacher (
             student.examStatuses[exam] = Pair(ExamResult.Rated, grade);
             exam.setGrade(student, grade)
         } else if (student.examStatuses[exam]?.first  == ExamResult.Participating) {
-            throw Exception ("${student.name} еще не завершил экзамен")
+            println("Этот студент пока что не завершил экзамен")
         } else {
-            throw Exception("${student.name} не участвовал или уже оценен")
+            println("Студент уже оценен или не участвовал в экзамене")
         }
     }
     fun getStudentsForGrades(exam: Exam): List<Student> {
