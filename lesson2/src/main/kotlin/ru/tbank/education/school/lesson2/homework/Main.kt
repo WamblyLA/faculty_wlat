@@ -11,14 +11,14 @@ fun main() {
         name = "Ivan Ivanov",
         birthDate = LocalDate.of(1990, 1, 1),
         cadefr = "FCS",
-        email = "tbank@tbank.com",
+        email = "tbank@kbant.com",
         position = "Head teacher"
     )
     val student = Student(
         id = generateRandomString(10),
         name = "Petr Petrov",
         birthDate = LocalDate.of(2005, 1, 1),
-        email = "mail@email.com",
+        email = "tbank@tankb.com",
         faculty = "Economics and Data Analysis"
     )
     university.addPerson(student)
@@ -31,4 +31,5 @@ fun main() {
     teacher.rateStudent(exam, student, 15);
     println("Студент оценен в ${student.getGrade(exam)}")
     teacher.deleteExam(university,exam);
+    println("После удаления экзаменов ${university.getExams().size}")
 }
