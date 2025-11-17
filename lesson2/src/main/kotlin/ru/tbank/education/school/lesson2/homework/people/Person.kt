@@ -5,7 +5,7 @@ abstract open class Person(
     val name: String,
     val birthDate: LocalDate,
     email: String,
-    val Role: Roles,
+    val personRole: Roles,
 ) {
     protected var email: String = email
         set(newOne) {
@@ -17,7 +17,7 @@ abstract open class Person(
         }
     val age: Int
         get() = LocalDate.now().year - birthDate.year
-    abstract fun getRole(): Roles
+    open fun getRole(): Roles = personRole
     open fun getInfo(): Map<String, String> {
         return mapOf(
             "id" to id,
