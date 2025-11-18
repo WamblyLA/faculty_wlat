@@ -28,7 +28,7 @@ class Teacher (
         if (exam.teacher == this) {
             university.removeExam(exam)
         } else {
-            println("Нельзя удалить не принадлежащий вам экзамен")
+            throw Exception("Нельзя удалить не принадлежащий экзамен")
         }
     }
 
@@ -47,9 +47,9 @@ class Teacher (
             student.examStatuses[exam] = Pair(ExamResult.Rated, grade);
             exam.setGrade(student, grade)
         } else if (student.examStatuses[exam]?.first  == ExamResult.Participating) {
-            println("Этот студент пока что не завершил экзамен")
+            throw Exception ("${student.name} еще не завершил экзамен")
         } else {
-            println("Студент уже оценен или не участвовал в экзамене")
+            throw Exception("${student.name} не участвовал или уже оценен")
         }
     }
     fun getStudentsForGrades(exam: Exam): List<Student> {
