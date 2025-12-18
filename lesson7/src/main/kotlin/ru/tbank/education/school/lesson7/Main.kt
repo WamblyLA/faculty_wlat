@@ -29,6 +29,7 @@ fun task() {
             )
         )
     )
+    users.map {println(it.orders)};
 }
 
 
@@ -36,6 +37,8 @@ fun task() {
 fun task2() {
     val months = listOf("Янв", "Фев", "Мар", "Апр", "Май")
     val revenue = listOf(1000, 1200, 800, 1400, 1300)
+    val otchet = months.zip(revenue) {(m,r) -> "$m $r"}
+    println(otchet)
 }
 
 // Задание 3 - выведите id всех заказов, которые были доставлены и оплачены на сумму > 1000
@@ -46,6 +49,8 @@ fun task3() {
         Order(id = 3, product = "Рюкзак", amount = 1000, isPaid = true, isDelivered = true),
         Order(id = 4, product = "Кружка", amount = 500, isPaid = false, isDelivered = false)
     )
+    val filterOrders = orders.filter { it.isDelivered && it.amount > 1000 && it.isPaid }
+    println(filterOrders)
 }
 
 
@@ -64,6 +69,8 @@ fun task4() {
         Student(name = "Галина", group = "A-03"),
         Student(name = "Денис", group = "A-02")
     )
+    val gb = students.groupingBy { it.group }.eachCount()
+    println(gb)
 }
 
 data class ApiResponse(val code: Int, val message: String)
@@ -76,7 +83,10 @@ fun task5() {
         ApiResponse(code = 200, message = "OK"),
         ApiResponse(code = 200, message = "Cached OK")
     )
-
+    val firstOk = responses.firstOrNull {it.code == 200}
+    val lastServ = responses.lastOrNull {it.code == 500}
+    println(firstOk)
+    println(lastServ)
 }
 
 data class Movie(val title: String, val rating: Double)
@@ -90,6 +100,8 @@ fun task6() {
         Movie(title = "Тёмный рыцарь", rating = 9.1),
         Movie(title = "Мементо", rating = 8.5)
     )
+    val sortMovies = movies.sortedBy { it.rating }.take(n=3)
+    println(sortMovies)
 }
 
 // Задание 7 - добавить логирование операций
@@ -98,8 +110,12 @@ fun task7() {
     val subtract: (a: Int, b: Int) -> Int = { a, b -> a - b }
     val multiply: (a: Int, b: Int) -> Int = { a, b -> a * b }
 }
-
-
+fun withLogs(operation: (a: Int, b:Int) -> Int) =
+{ (a,b) ->
+    println("Parameters $a $b")
+    val resukt = operation(a,b)
+    println(resukt)
+}
 data class Client(
     val name: String,
     val email: String,
@@ -108,7 +124,9 @@ data class Client(
 
 
 fun <A, B, C> ((A) -> B).andThen(next: (B) -> C): (A) -> C = { a -> next(this(a)) }
-
+fun trim(field: String) = field.replace(" ", "")
+fun lower(field: String) = field.lowercase()
+fun validate(field: String) = if (field.isEmpty()) null else field
 // Задание 8 - хочу написать функции для валидации полей
 fun task8() {
     val rawClients = listOf(
@@ -116,6 +134,9 @@ fun task8() {
         Client(name = "  Мария  ", email = "maria@mail.ru", phone = "8-800-555-35-35"),
         Client(name = " ", email = "test@", phone = "000"),
     )
+    val name = ""
+    val validateFunc = ::trim.andThen { ::lower }.andThen { ::validate }
+
 }
 
 // Задание 9 - просто смотрим на примеры
@@ -189,4 +210,8 @@ interface Function2<in P1, in P2, out R> {
 
 
 fun main() {
+    task()
+    task2()
+    task3()
+    task4()
 }
