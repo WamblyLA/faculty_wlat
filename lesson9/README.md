@@ -4,21 +4,22 @@
 Найти все строки со словом ERROR во всех логах в каталоге logs (включая logs/old) и сохранить их в файл errors.txt в корне проекта.
 
 ```bash
-TODO()
+grep -r "ERROR" logs > errors.txt
 ```
 
 ## Задание 2. Архивация старых логов
 Создать каталог archived/ в корне проекта и переместить туда все файлы из logs/old.
 
 ```bash
-TODO()
+mkdir -p archived
+mv logs/old/* archived/
 ```
 
 ## Задание 3. Подсчёт размера логов
 Посчитать общий размер каталога logs и записать результат в logs_size.txt.
 
 ```bash
-TODO()
+du -sh logs/ > logs_size.txt
 ```
 
 ## Задание 4. Нахождение самого большого лог-файла
@@ -32,14 +33,14 @@ TODO()
 Подсчитать количество файлов с расширением .log во всём каталоге logs и сохранить результат в log_count.txt.
 
 ```bash
-TODO()
+find -type f -name "*.logs" > log_count.txt
 ```
 
 ## Задание 6. Поиск конфигурационных параметров
 Найти во всех config/*.conf строки, содержащие слово "host", и записать в host_params.txt.
 
 ```bash
-TODO()
+grep -r "host" logs/config/*.conf logs > host_params.txt
 ```
 
 ## Задание 7. Создание резервного архива конфигов
