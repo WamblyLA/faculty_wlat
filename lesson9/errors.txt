@@ -1,0 +1,5 @@
+app.logs:2025-01-01 ERROR Failed to connect to metrics service
+app.logs:2025-01-01 ERROR Metrics service unreachable
+errors.logs:[ERROR] Database timeout at 12:01
+errors.logs:[ERROR] Cache synchronization failed
+old/legacy.logs:2019-12-01 ERROR Legacy component crashed
