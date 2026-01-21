@@ -26,28 +26,28 @@ du -sh logs/ > logs_size.txt
 Найти самый большой файл в каталоге logs (без учёта подкаталогов) и записать его имя в файл biglog.txt.
 
 ```bash
-TODO()
+ls -S -p logs | grep -v / | head -n 1 > biglog.txt
 ```
 
 ## Задание 5. Подсчёт количества логов
 Подсчитать количество файлов с расширением .log во всём каталоге logs и сохранить результат в log_count.txt.
 
 ```bash
-find -type f -name "*.logs" > log_count.txt
+find logs -type f -name "*.log" | wc -l > log_count.txt
 ```
 
 ## Задание 6. Поиск конфигурационных параметров
 Найти во всех config/*.conf строки, содержащие слово "host", и записать в host_params.txt.
 
 ```bash
-grep -r "host" logs/config/*.conf logs > host_params.txt
+grep -r "host" config/*.conf > host_params.txt
 ```
 
 ## Задание 7. Создание резервного архива конфигов
 Создать zip-архив config_backup.zip, содержащий все файлы из config/.
 
 ```bash
-TODO()
+zip -r config_backup.zip config
 ```
 
 ## Задание 8. Создание общего резервного архива
@@ -57,14 +57,18 @@ TODO()
 - файл errors.txt (если он есть)
 
 ```bash
-TODO()
+zip -r project_backup.zip logs/config/*.conf logs/*.log logs/old/*.log
+if [ -f errors.txt ]
+then
+  zip project_backup.zip errors.txt
+fi
 ```
 
 ## Задание 9. Очистка пустых строк в логах
 Создать файл cleaned_app.log, содержащий содержимое app.log без пустых строк.
 
 ```bash
-TODO()
+grep -v '^[[:space:]]*$' logs/app.log > cleaned_app.log
 ```
 
 ## Задание 10. Подсчёт количества строк в каждом конфиге
@@ -74,7 +78,10 @@ db.conf 8
 (где число — количество строк в файле)
 
 ```bash
-TODO()
+for now in logs/config/*.conf
+do
+  echo "$(basename "$now") $(wc -l < "$now")"
+done > conf_stats.txt
 ```
 
 
@@ -90,3 +97,5 @@ TODO()
 ### Требования:
 - Не использовать сторонние библиотеки для архивирования (только стандартный API).
 - Программа должна выводить в консоль список добавляемых файлов и их размер.
+
+P.S: Я не совсем понял, как делать задания, поскольку большая часть файлов имеет расширение .logs, а в задании указаны .log
