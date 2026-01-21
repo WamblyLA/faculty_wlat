@@ -1,3 +1,0 @@
-./archived/legacy.logs
-./logs/app.logs
-./logs/errors.logs
