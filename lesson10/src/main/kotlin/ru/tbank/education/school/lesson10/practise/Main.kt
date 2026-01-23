@@ -1,6 +1,7 @@
 import java.time.LocalDate
 import java.time.Month
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 fun main() {
     task1()
@@ -8,7 +9,18 @@ fun main() {
     task2()
     println()
     task3()
+    task4()
+    println()
+    task5()
+    println()
+    task6()
+    println()
+    task7()
+    println()
+    task8()
+    println()
 }
+
 
 /*
 1) Строки + регулярные выражения
@@ -87,4 +99,55 @@ fun task3() {
         .sorted()
 
     println("Task 3 repeated words: ${repeated.joinToString(", ")}")
+}
+fun task4() {
+    val list = listOf(
+        "A-123",
+        "B-7",
+        "AA-12",
+        "C-001",
+        "D-99x",
+        "Aadfsdfs",
+        "124sd12"
+    )
+    var regex = Regex("""([A-Z])-(\d{1,3})""")
+    val types = list.filter { regex.containsMatchIn(it) }
+    println("Task 4 elem count: ${types.size}")
+    println(types)
+}
+fun task5() {
+    val list = listOf(
+        " Hello              world ",
+        "A B                                    C",
+        " one"
+    )
+    val regex = Regex("""\s+""")
+    val listNo = list.map { it.trim().replace(regex, " ") }
+    println(listNo)
+}
+fun task6() {
+    val list : List<Pair<String, String>> = listOf("2026-01-01" to "2026-01-10", "2025-12-31" to "2026-01-01", "2026-02-01" to "2026-01-22")
+    val listDate = list.map {LocalDate.parse(it.first) to LocalDate.parse(it.second)}
+    val ans = mutableListOf<Long>()
+     for (paira in listDate) {
+         ans.add(ChronoUnit.DAYS.between(paira.second, paira.first))
+     }
+    println(ans)
+}
+fun task7() {
+    val list = listOf("math:Ivan", "bio:Olga", "math:Max", "bio:Ivan", "cs:Olga")
+    val mapa = mutableMapOf<String, MutableList<String>>()
+    for (str in list) {
+        val newStr = str.split(":")
+        mapa.getOrPut(newStr[0]) { mutableListOf() }.add(newStr[1])
+    }
+    println(mapa)
+}
+fun task8() {
+    val list = listOf("Start at 2026/01/22 09:14", "No time here", "End: 22-01-2026 18:05", "Test: 2026-01-22 13:03")
+    val regex = Regex("""\d{4}-\d{2}-\d{2} (\d{2}):(\d{2})""")
+    val newList = list.mapNotNull { elem ->
+        regex.find(elem)?.value
+    }
+    println(newList)
 }

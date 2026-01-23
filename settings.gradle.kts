@@ -21,7 +21,7 @@ include("lesson7")
 //include("simple")
 include("lesson8")
 include("lesson9")
-//include("lesson10")
+include("lesson10")
 
 include("lesson5_sem")
 include("lesson5_sem2")
