@@ -1,4 +1,4 @@
-package org.example
+package org.example.MDTask
 
 import java.lang.Thread.sleep
 import java.math.BigInteger
@@ -8,6 +8,7 @@ import java.util.Collections.synchronizedList
 import java.util.concurrent.Callable
 import kotlinx.coroutines.*
 import java.io.File
+import java.util.concurrent.Future
 
 object CreateThreads {
     fun run(): List<Thread> {
@@ -154,7 +155,7 @@ object ExecutorServiceExample {
 object FutureFactorial {
     fun run(): Map<Int, BigInteger> {
         val execs = Executors.newFixedThreadPool(4);
-        val futures = mutableMapOf<Int, java.util.concurrent.Future<BigInteger>>()
+        val futures = mutableMapOf<Int, Future<BigInteger>>()
         for (n in 1..10) {
             val future =
                 execs.submit(Callable {

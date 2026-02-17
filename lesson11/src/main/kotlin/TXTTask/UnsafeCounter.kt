@@ -14,14 +14,14 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 class UnsafeCounter {
 
-    private var value = 0
+    private var value = AtomicInteger(0)
 
     suspend fun increment() {
         delay(1)
-        value++
+        value.incrementAndGet()
     }
 
-    fun getValue(): Int = value
+    fun getValue(): Int = value.get()
 
     suspend fun runConcurrentIncrements(
         coroutineCount: Int = 10,

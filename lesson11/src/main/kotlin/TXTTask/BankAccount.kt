@@ -18,6 +18,8 @@ package homework
 class BankAccount(val id: String, var balance: Int) {
 
     fun transfer(to: BankAccount, amount: Int) {
+        val first = if (this.id < to.id) this else to
+        val second = if (this.id > to.id) this else to
         synchronized(this) {
             Thread.sleep(10)
             
