@@ -7,6 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.Collections.synchronizedList
 import java.util.concurrent.Callable
 import kotlinx.coroutines.*
+import java.io.File
+
 object CreateThreads {
     fun run(): List<Thread> {
         val threadNames = listOf("Thread-A", "Thread-B", "Thread-C");
@@ -136,16 +138,16 @@ object ExecutorServiceExample {
     fun run(): List<String> {
         val execs = Executors.newFixedThreadPool(4);
         val result = synchronizedList(mutableListOf<String>());
-        repeat(20) { index ->
+        repeat(20) { i ->
             execs.submit {
-                val msg = "Thread $index with name ${Thread.currentThread().name}"
+                val msg = "Поток $i с именем ${Thread.currentThread().name}"
                 println(msg)
                 result.add(msg);
                 sleep(200)
             }
         }
         execs.shutdown()
-        return listOf();
+        return result;
     }
 }
 
@@ -203,9 +205,64 @@ object CoroutineLaunch {
         results
     }
 }
+
 object AsyncAwait {
+    private fun summa(a: Long, b: Long): Long {
+        var ans = 0L
+        for (i in a..b) {
+            ans += i
+        }
+        return ans
+    }
+
     fun run(): Long = runBlocking {
-        TODO()
+        val n = 1000000L;
+        val p = n / 4
+        val a1 = async { summa(1, p) }
+        val a2 = async { summa(p + 1, 2 * p) }
+        val a3 = async { summa(2 * p + 1, 3 * p) }
+        val a4 = async { summa(3 * p + 1, 4 * p) }
+        a1.await() + a2.await() + a3.await() + a4.await()
+    }
+}
+
+object StructuredConcurrency {
+    fun run(failingCoroutineIndex: Int): Int = runBlocking {
+        var ans = AtomicInteger(0)
+        try {
+            coroutineScope {
+                repeat(5) { i ->
+                    launch {
+                        if (i == failingCoroutineIndex) {
+                            throw RuntimeException("Упала корутина $i")
+                        }
+                        try {
+                            repeat(10) {
+                                delay(10)
+                            }
+                            ans.incrementAndGet()
+                        } catch (e: Exception) {
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+        }
+        ans.get()
+    }
+}
+
+object WithContextIO {
+    fun run(filePaths: List<String>): Map<String, String> = runBlocking {
+        val ans = filePaths.map { elem ->
+            async {
+                val text = withContext(Dispatchers.IO) {
+                    File(elem).readText()
+                }
+                elem to text
+            }
+        }
+        ans.associate { it.await() }
     }
 }
 
@@ -219,5 +276,16 @@ fun main() {
 //    ExecutorServiceExample.run()
 //    println(FutureFactorial.run())
 //    CoroutineLaunch.run()
+//    println(AsyncAwait.run())
+//    println(StructuredConcurrency.run(1))
+//    println(
+//        WithContextIO.run(
+//            listOf(
+//                "lesson11/test_files/file1.txt",
+//                "lesson11/test_files/file2.txt",
+//                "lesson11/test_files/file3.txt"
+//            )
+//        )
+//    )
 
 }
